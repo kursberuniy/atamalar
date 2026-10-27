@@ -51,35 +51,6 @@ header p {
     box-shadow: 0 4px 10px rgba(52, 152, 219, 0.1);
 }
 
-.terms-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.term-card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
-}
-
-.term-card:hover {
-    transform: translateY(-5px);
-}
-
-.term-card h3 {
-    color: #2980b9;
-    margin-bottom: 8px;
-}
-
-.term-card p {
-    color: #555;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
 .filter-buttons {
     display: flex;
     justify-content: center;
@@ -109,19 +80,37 @@ header p {
     color: #fff;
     box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
 }
+
+.terms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
 .term-card {
     background: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     transition: all 0.2s ease;
-    cursor: pointer; /* Sichqoncha borganda qo'l belgisi chiqishi uchun */
+    cursor: pointer;
     position: relative;
 }
 
 .term-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.term-card h3 {
+    color: #2980b9;
+    margin-bottom: 8px;
+}
+
+.term-card p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 /* Nusxalangandagi holat uchun dizayn */
