@@ -48,6 +48,7 @@ const filterButtons = document.querySelectorAll('.filter-btn');
 let currentCategory = 'all'; // Boshlang'ich kategoriya
 
 // Atamentalarni ekranga chiqarish funksiyasi
+// Atamentalarni ekranga chiqarish va nusxalash mantiqi
 function displayTerms(items) {
     termsContainer.innerHTML = '';
     
@@ -60,10 +61,34 @@ function displayTerms(items) {
         const card = document.createElement('div');
         card.classList.add('term-card');
         
+        // Kartochka ichiga matn va kichik ko'rsatma qo'shamiz
         card.innerHTML = `
             <h3>${item.title}</h3>
             <p>${item.definition}</p>
+            <span class="copy-hint">📋 Nusxalash uchun bosing</span>
         `;
+        
+        // Kartochka ustiga bosilganda ishlaydigan hodisa (Event)
+        card.addEventListener('click', () => {
+            // Nusxalanadigan matn (Atama nomi va uning ma'nosi)
+            const textToCopy = `${item.title}: ${item.definition}`;
+            
+            // Clipboard (Bufer) ga yozish
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Kartochkaga 'copied' klassini qo'shamiz
+                card.classList.add('copied');
+                const hint = card.querySelector('.copy-hint');
+                hint.textContent = '✅ Nusxalandi!';
+                
+                // 1.5 soniyadan keyin asl holatiga qaytarish
+                setTimeout(() => {
+                    card.classList.remove('copied');
+                    hint.textContent = '📋 Nusxalash uchun bosing';
+                }, 1500);
+            }).catch(err => {
+                console.error('Nusxalashda xatolik yuz berdi:', err);
+            });
+        });
         
         termsContainer.appendChild(card);
     });
