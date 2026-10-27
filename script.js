@@ -43,6 +43,9 @@ const terms = [
 
 const termsContainer = document.getElementById('termsContainer');
 const searchInput = document.getElementById('searchInput');
+const filterButtons = document.querySelectorAll('.filter-btn');
+
+let currentCategory = 'all'; // Boshlang'ich kategoriya
 
 // Atamentalarni ekranga chiqarish funksiyasi
 function displayTerms(items) {
@@ -66,17 +69,39 @@ function displayTerms(items) {
     });
 }
 
+// Filtrlash va qidiruvni birgalikda boshqarish funksiyasi
+function filterAndDisplay() {
+    const searchText = searchInput.value.toLowerCase();
+    
+    const filtered = terms.filter(item => {
+        // Kategoriya mos kelishini tekshirish
+        const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
+        
+        // Qidiruv matni mos kelishini tekshirish
+        const matchesSearch = item.title.toLowerCase().includes(searchText) || 
+                              item.definition.toLowerCase().includes(searchText);
+                              
+        return matchesCategory && matchesSearch;
+    });
+    
+    displayTerms(filtered);
+}
+
 // Boshlang'ich yuklash
 displayTerms(terms);
 
-// Qidiruv funksiyasini ulash
-searchInput.addEventListener('input', (e) => {
-    const searchText = e.target.value.toLowerCase();
-    
-    const filteredTerms = terms.filter(item => 
-        item.title.toLowerCase().includes(searchText) || 
-        item.definition.toLowerCase().includes(searchText)
-    );
-    
-    displayTerms(filteredTerms);
+// Qidiruv inputiga hodisa qo'shish
+searchInput.addEventListener('input', filterAndDisplay);
+
+// Kategoriya tugmalariga hodisa qo'shish
+filterButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        // Faol klassni o'zgartirish
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        // Joriy kategoriyani yangilash va filtrlash
+        currentCategory = e.target.getAttribute('data-category');
+        filterAndDisplay();
+    });
 });
