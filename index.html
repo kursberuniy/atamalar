@@ -1,238 +1,48 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Atamalar Lug'ati</title>
+    <!-- CSS faylini ulanishi -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-body {
-    background-color: #f4f7f6;
-    color: #333;
-    padding: 20px;
-}
+    <div class="container">
+        <!-- Sarlavha qismi -->
+        <header>
+            <h1>IT Atamalar Lug'ati</h1>
+            <p>Dasturlash va axborot texnologiyalari bo'yicha zamonaviy lug'at</p>
+        </header>
 
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-}
+        <!-- Flashcard rejimiga o'tish tugmasi -->
+        <div class="mode-toggle">
+            <button id="modeToggleBtn" class="mode-btn">🔄 Flashcard Rejimiga O'tish</button>
+        </div>
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
+        <!-- Qidiruv qutisi -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Atama yoki ma'nosini qidiring...">
+        </div>
 
-header h1 {
-    color: #2c3e50;
-    margin-bottom: 10px;
-}
+        <!-- Kategoriyalar bo'yicha filtr tugmalari -->
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-category="all">Barchasi</button>
+            <button class="filter-btn" data-category="frontend">Frontend</button>
+            <button class="filter-btn" data-category="backend">Backend</button>
+            <button class="filter-btn" data-category="git">Git & Tools</button>
+            <button class="filter-btn" data-category="database">Database</button>
+            <button class="filter-btn" data-category="general">Umumiy</button>
+        </div>
 
-header p {
-    color: #7f8c8d;
-}
+        <!-- Atamalar chiqadigan asosiy konteyner -->
+        <div id="termsContainer" class="terms-grid">
+            <!-- JavaScript orqali kartochkalar shu yerga dinamik qo'shiladi -->
+        </div>
+    </div>
 
-.search-box {
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-.search-box input {
-    width: 100%;
-    max-width: 500px;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 25px;
-    outline: none;
-    transition: 0.3s;
-}
-
-.search-box input:focus {
-    border-color: #3498db;
-    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.1);
-}
-
-.filter-buttons {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.filter-btn {
-    background-color: #fff;
-    border: 2px solid #3498db;
-    color: #3498db;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.filter-btn:hover {
-    background-color: #ebf5fb;
-}
-
-.filter-btn.active {
-    background-color: #3498db;
-    color: #fff;
-    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-}
-
-.terms-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.term-card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: all 0.2s ease;
-    cursor: pointer;
-    position: relative;
-}
-
-.term-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-}
-
-.term-card h3 {
-    color: #2980b9;
-    margin-bottom: 8px;
-}
-
-.term-card p {
-    color: #555;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* Nusxalangandagi holat uchun dizayn */
-.term-card.copied {
-    border: 2px solid #2ecc71;
-    background-color: #e8f8f5;
-}
-
-.copy-hint {
-    display: block;
-    margin-top: 12px;
-    font-size: 12px;
-    color: #95a5a6;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-.term-card.copied .copy-hint {
-    color: #27ae60;
-    font-weight: bold;
-}
-
-/* Rejimni o'zgartirish tugmasi dizayni */
-.mode-toggle {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.mode-btn {
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);
-}
-
-.mode-btn:hover {
-    background-color: #219653;
-    transform: translateY(-2px);
-}
-
-/* Flashcard 3D flip (o'girilish) effektlari uchun */
-.term-card.flashcard {
-    background: transparent;
-    perspective: 1000px;
-    height: 180px;
-    box-shadow: none;
-    padding: 0;
-    cursor: pointer;
-}
-
-.card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-/* Karta o'girilgandagi holat */
-.term-card.flashcard.flipped .card-inner {
-    transform: rotateY(180deg);
-}
-
-.card-front, .card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    border-radius: 10px;
-    background: #fff;
-}
-
-.card-front h3 {
-    color: #2980b9;
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.card-front .card-hint {
-    font-size: 12px;
-    color: #95a5a6;
-}
-
-.card-back {
-    transform: rotateY(180deg);
-    background: #f8f9fa;
-    border: 2px solid #3498db;
-    text-align: left;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.card-back p {
-    font-size: 14px;
-    color: #333;
-    line-height: 1.4;
-}
-
-.card-back .copy-action {
-    font-size: 11px;
-    color: #27ae60;
-    font-weight: bold;
-    align-self: center;
-    margin-top: 5px;
-}
-
-/* Nusxalangandagi orqa tomon rangi */
-.card-back.copied-back {
-    background-color: #e8f8f5;
-    border-color: #2ecc71;
-}
+    <!-- JavaScript faylini ulanishi -->
+    <script src="script.js"></script>
+</body>
+</html>
