@@ -44,11 +44,27 @@ const terms = [
 const termsContainer = document.getElementById('termsContainer');
 const searchInput = document.getElementById('searchInput');
 const filterButtons = document.querySelectorAll('.filter-btn');
+const modeToggleBtn = document.getElementById('modeToggleBtn');
 
 let currentCategory = 'all'; // Boshlang'ich kategoriya
+let isFlashcardMode = false; // Boshlanishiga oddiy rejim
 
-// Atamentalarni ekranga chiqarish funksiyasi
-// Atamentalarni ekranga chiqarish va nusxalash mantiqi
+// Rejimni o'zgartirish tugmasi hodisasi
+modeToggleBtn.addEventListener('click', () => {
+    isFlashcardMode = !isFlashcardMode;
+    
+    if (isFlashcardMode) {
+        modeToggleBtn.textContent = "📋 Oddiy Rejimga Qaytish";
+        modeToggleBtn.style.backgroundColor = "#2980b9";
+    } else {
+        modeToggleBtn.textContent = "🔄 Flashcard Rejimiga O'tish";
+        modeToggleBtn.style.backgroundColor = "#27ae60";
+    }
+    
+    filterAndDisplay(); // Ro'yxatni yangi rejimda qaytadan chizish
+});
+
+// Atamentalarni ekranga chiqarish funksiyasi (Flashcard yoki Oddiy rejim)
 function displayTerms(items) {
     termsContainer.innerHTML = '';
     
@@ -59,36 +75,77 @@ function displayTerms(items) {
 
     items.forEach(item => {
         const card = document.createElement('div');
-        card.classList.add('term-card');
         
-        // Kartochka ichiga matn va kichik ko'rsatma qo'shamiz
-        card.innerHTML = `
-            <h3>${item.title}</h3>
-            <p>${item.definition}</p>
-            <span class="copy-hint">📋 Nusxalash uchun bosing</span>
-        `;
-        
-        // Kartochka ustiga bosilganda ishlaydigan hodisa (Event)
-        card.addEventListener('click', () => {
-            // Nusxalanadigan matn (Atama nomi va uning ma'nosi)
-            const textToCopy = `${item.title}: ${item.definition}`;
+        if (isFlashcardMode) {
+            // --- FLASHCARD REJIMI ---
+            card.classList.add('term-card', 'flashcard');
             
-            // Clipboard (Bufer) ga yozish
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                // Kartochkaga 'copied' klassini qo'shamiz
-                card.classList.add('copied');
-                const hint = card.querySelector('.copy-hint');
-                hint.textContent = '✅ Nusxalandi!';
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h3>${item.title}</h3>
+                        <span class="card-hint">🔄 O'girish uchun bosing</span>
+                    </div>
+                    <div class="card-back">
+                        <p><strong>${item.title}:</strong> ${item.definition}</p>
+                        <span class="copy-action">📋 Nusxalash uchun bosing</span>
+                    </div>
+                </div>
+            `;
+            
+            const cardBack = card.querySelector('.card-back');
+            const copyAction = card.querySelector('.copy-action');
+
+            // Kartochkaga bosganda o'girish yoki nusxalash
+            card.addEventListener('click', (e) => {
+                if (card.classList.contains('flipped')) {
+                    const textToCopy = `${item.title}: ${item.definition}`;
+                    
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        cardBack.classList.add('copied-back');
+                        copyAction.textContent = '✅ Nusxalandi!';
+                        
+                        setTimeout(() => {
+                            cardBack.classList.remove('copied-back');
+                            copyAction.textContent = '📋 Nusxalash uchun bosing';
+                        }, 1500);
+                    }).catch(err => {
+                        console.error('Nusxalashda xatolik:', err);
+                    });
+                } else {
+                    card.classList.add('flipped');
+                }
                 
-                // 1.5 soniyadan keyin asl holatiga qaytarish
-                setTimeout(() => {
-                    card.classList.remove('copied');
-                    hint.textContent = '📋 Nusxalash uchun bosing';
-                }, 1500);
-            }).catch(err => {
-                console.error('Nusxalashda xatolik yuz berdi:', err);
+                e.stopPropagation();
             });
-        });
+
+        } else {
+            // --- ODDIY REJIM ---
+            card.classList.add('term-card');
+            
+            card.innerHTML = `
+                <h3>${item.title}</h3>
+                <p>${item.definition}</p>
+                <span class="copy-hint">📋 Nusxalash uchun bosing</span>
+            `;
+            
+            card.addEventListener('click', () => {
+                const textToCopy = `${item.title}: ${item.definition}`;
+                
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    card.classList.add('copied');
+                    const hint = card.querySelector('.copy-hint');
+                    hint.textContent = '✅ Nusxalandi!';
+                    
+                    setTimeout(() => {
+                        card.classList.remove('copied');
+                        hint.textContent = '📋 Nusxalash uchun bosing';
+                    }, 1500);
+                }).catch(err => {
+                    console.error('Nusxalashda xatolik:', err);
+                });
+            });
+        }
         
         termsContainer.appendChild(card);
     });
@@ -99,10 +156,7 @@ function filterAndDisplay() {
     const searchText = searchInput.value.toLowerCase();
     
     const filtered = terms.filter(item => {
-        // Kategoriya mos kelishini tekshirish
         const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
-        
-        // Qidiruv matni mos kelishini tekshirish
         const matchesSearch = item.title.toLowerCase().includes(searchText) || 
                               item.definition.toLowerCase().includes(searchText);
                               
@@ -113,7 +167,7 @@ function filterAndDisplay() {
 }
 
 // Boshlang'ich yuklash
-displayTerms(terms);
+filterAndDisplay();
 
 // Qidiruv inputiga hodisa qo'shish
 searchInput.addEventListener('input', filterAndDisplay);
@@ -121,11 +175,9 @@ searchInput.addEventListener('input', filterAndDisplay);
 // Kategoriya tugmalariga hodisa qo'shish
 filterButtons.forEach(button => {
     button.addEventListener('click', (e) => {
-        // Faol klassni o'zgartirish
         filterButtons.forEach(btn => btn.classList.remove('active'));
         e.target.classList.add('active');
         
-        // Joriy kategoriyani yangilash va filtrlash
         currentCategory = e.target.getAttribute('data-category');
         filterAndDisplay();
     });
