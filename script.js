@@ -263,7 +263,7 @@ const terms = [
         title: "CI/CD", 
         category: "backend", 
         definition: "Continuous Integration / Continuous Deployment — kodni avtomatik testlash va serverga uzluksiz joylab borish amaliyoti.",
-        command: "git push origin main  # GitHub Actions orqali avtomatik ishga tushadi",
+        command: "git push origin main # GitHub Actions orqali avtomatik ishga tushadi",
         link: "https://github.com/features/actions"
     },
     { 
